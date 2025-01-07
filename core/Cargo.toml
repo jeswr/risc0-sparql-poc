@@ -1,0 +1,8 @@
+[package]
+name = "json-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+risc0-zkvm = { version = "1.2.0" }
+serde = "1.0"
