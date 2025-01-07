@@ -6,4 +6,7 @@ edition = "2021"
 [workspace]
 
 [dependencies]
+json = "0.12.4"
 risc0-zkvm = { version = "1.2.0", default-features = false, features = ['std'] }
+json-core = { path = "../../core" }
+sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }

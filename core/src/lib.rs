@@ -12,11 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use risc0_zkvm::sha::Digest;
 use serde::{Deserialize, Serialize};
+use sha2::{Sha256, Digest};
+use json::parse;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
     pub data: u32,
-    pub hash: Digest,
+    // pub hash: Digest,
+}
+
+pub fn run(str: &String) -> Outputs {
+  let _sha = Sha256::digest(str);
+  let data = parse(&str).unwrap();
+  let proven_val = data["critical_data"].as_u32().unwrap();
+  return Outputs {
+      data: proven_val,
+      // hash: *sha,
+  };
 }
