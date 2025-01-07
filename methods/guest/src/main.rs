@@ -22,17 +22,6 @@ risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
     let data: String = env::read();
-    // let sha = Sha256(&data.as_bytes());
-    // let data = parse(&data).unwrap();
-    // let proven_val = data["critical_data"].as_u32().unwrap();
-    // let out = Outputs {
-    //     data: proven_val,
-    //     hash: *sha,
-    // };
-    // let out = Outputs {
-    //     data: 0,
-    //     hash: [0; 32].into(),
-    // };
     let out = run(&data);
     env::commit(&out);
 }

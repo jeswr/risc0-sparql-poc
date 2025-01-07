@@ -52,7 +52,7 @@ fn main() {
     // For example:
     let outputs: Outputs = receipt.journal.decode().unwrap();
 
-    println!("\nThe JSON file with hash\n  {}\nprovably contains a field 'critical_data' with value {}\n", outputs.data, outputs.data);
+    println!("\nThe JSON file with hash\n  {:?}\nprovably contains a field 'critical_data' with value {}\n", hex::encode(outputs.hash), outputs.data);
 
     // The receipt was verified at the end of proving, but the below code is an
     // example of how someone else could verify this receipt.
