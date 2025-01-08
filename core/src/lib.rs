@@ -15,6 +15,8 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Sha256, Digest};
 use json::parse;
+use oxrdf::{NamedNodeRef, vocab::rdf};
+use oxttl::TurtleParser;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
