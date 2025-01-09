@@ -4,6 +4,7 @@ use std::io::Read;
 // The ELF is used for proving and the ID is used for verification.
 use methods::{RDF_CONTAINS_GUEST_ELF, RDF_CONTAINS_GUEST_ID};
 use risc0_zkvm::{default_prover, ExecutorEnv};
+use serde_json;
 
 fn main() {
     // Initialize tracing. In order to view logs, run `RUST_LOG=info cargo run`
@@ -24,7 +25,7 @@ fn main() {
     // ExecutorEnvBuilder::build().
 
     let mut file =
-        std::fs::File::open("res/example.json").expect("Example file should be accessible");
+        std::fs::File::open("res/windsurf.nq").expect("Example file should be accessible");
     let mut data = String::new();
     file.read_to_string(&mut data)
         .expect("Should not have I/O errors");
@@ -32,8 +33,8 @@ fn main() {
     // For example:
     // let input: u32 = 15 * u32::pow(2, 27) + 1;
     let env = ExecutorEnv::builder()
-        .write(&data)
-        .unwrap()
+        .write(&data).unwrap()
+        .write(&"SELECT * WHERE { ?s ?p ?o . }").unwrap()
         .build()
         .unwrap();
 
@@ -52,9 +53,13 @@ fn main() {
     // For example:
     let outputs: Outputs = receipt.journal.decode().unwrap();
 
-    println!("\nThe JSON file with hash\n  {:?}\nprovably contains a field 'critical_data' with value {}\n", hex::encode(outputs.hash), outputs.data);
-
+    println!("\nThe JSON file with hash\n  {:?}\nprovably contains a field 'critical_data' with value {}\n", hex::encode(outputs.data), hex::encode(outputs.query));
     // The receipt was verified at the end of proving, but the below code is an
     // example of how someone else could verify this receipt.
     receipt.verify(RDF_CONTAINS_GUEST_ID).unwrap();
+
+    // Serialise the receipt
+    let receipt_json = serde_json::to_string(&receipt).unwrap();
+    println!("Receipt: {}", receipt_json);
+    std::fs::write("receipt.json", receipt_json).expect("Unable to write file");
 }

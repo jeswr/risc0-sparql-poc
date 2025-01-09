@@ -22,6 +22,7 @@ risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
     let data: String = env::read();
-    let out = run(&data);
+    let query: String = env::read();
+    let out = run(&data, &query);
     env::commit(&out);
 }

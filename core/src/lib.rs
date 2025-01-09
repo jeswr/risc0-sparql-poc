@@ -12,24 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use json::stringify;
+use oxrdf::{Dataset, GraphName, NamedNode, Quad};
 use serde::{Deserialize, Serialize};
-use sha2::{Sha256, Digest};
-use json::parse;
-use oxrdf::{NamedNodeRef, vocab::rdf};
-use oxttl::TurtleParser;
+use sha2::{Digest, Sha256};
+use spareval::{QueryEvaluator, QueryResults, QuerySolution, QuerySolutionIter};
+use spargebra::Query;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
-    pub data: u32,
-    pub hash: [u8; 32],
+    // pub query_result: [u8; 32],
+    pub data: [u8; 32],
+    pub query: [u8; 32],
 }
 
-pub fn run(str: &String) -> Outputs {
-  let sha = Sha256::digest(str);
-  let data = parse(&str).unwrap();
-  let proven_val = data["critical_data"].as_u32().unwrap();
-  return Outputs {
-      data: proven_val,
-      hash: sha.into(),
-  };
+pub fn run(data: &String, query_string: &String) -> Outputs {
+    let ex = NamedNode::new("http://example.com").unwrap();
+    let dataset = Dataset::from_iter([Quad::new(
+        ex.clone(),
+        ex.clone(),
+        ex.clone(),
+        GraphName::DefaultGraph,
+    )]);
+
+    let query = Query::parse(query_string, None).unwrap();
+    let results = QueryEvaluator::new().execute(dataset, &query);
+    let solution: QueryResults = results.unwrap();
+   
+    if let QueryResults::Solutions(solutions) = solution {
+        let solutions = solutions.collect::<Result<Vec<_>, _>>().unwrap();
+        
+        // solutions[0].unwrap();
+        return Outputs {
+            // query_result: Sha256::digest(json::stringify(solutions)).into(),
+            data: Sha256::digest(data).into(),
+            query: Sha256::digest(query_string).into(),
+            // query_hash: Sha256::digest(query).into(),
+        };
+    }
+
+    panic!("QueryResults::Solutions expected");
 }
