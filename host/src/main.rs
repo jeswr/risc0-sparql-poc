@@ -30,6 +30,9 @@ fn main() {
     file.read_to_string(&mut data)
         .expect("Should not have I/O errors");
 
+    // Start timer
+    let start = std::time::Instant::now();
+
     // For example:
     // let input: u32 = 15 * u32::pow(2, 27) + 1;
     let env = ExecutorEnv::builder()
@@ -44,6 +47,9 @@ fn main() {
     // Proof information by proving the specified ELF binary.
     // This struct contains the receipt along with statistics about execution of the guest
     let prove_info = prover.prove(env, RDF_CONTAINS_GUEST_ELF).unwrap();
+    // End proof timer
+    let end = std::time::Instant::now();
+    println!("Proving took {:?}", end - start);
 
     // extract the receipt.
     let receipt = prove_info.receipt;
@@ -53,13 +59,22 @@ fn main() {
     // For example:
     let outputs: Outputs = receipt.journal.decode().unwrap();
 
-    println!("\nThe JSON file with hash\n  {:?}\nprovably contains a field 'critical_data' with value {}\n", hex::encode(outputs.data), hex::encode(outputs.query));
+    // Log the resultant hashes
+    println!("Data hash: {:?}", hex::encode(outputs.data));
+    println!("Query hash: {:?}", hex::encode(outputs.query));
+    println!("Result hash: {:?}", hex::encode(outputs.result));
+
     // The receipt was verified at the end of proving, but the below code is an
     // example of how someone else could verify this receipt.
+    // Start verification timer
+    let start = std::time::Instant::now();
     receipt.verify(RDF_CONTAINS_GUEST_ID).unwrap();
+    // End verification timer
+    let end = std::time::Instant::now();
+    println!("Verification took {:?}", end - start);
 
     // Serialise the receipt
     let receipt_json = serde_json::to_string(&receipt).unwrap();
-    println!("Receipt: {}", receipt_json);
+    // println!("Receipt: {}", receipt_json);
     std::fs::write("receipt.json", receipt_json).expect("Unable to write file");
 }
