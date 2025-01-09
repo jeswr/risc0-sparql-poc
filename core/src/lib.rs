@@ -18,6 +18,12 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use spareval::{QueryEvaluator, QueryResults, QuerySolution, QuerySolutionIter};
 use spargebra::Query;
+use oxsdatatypes::{DayTimeDuration, Duration};
+
+#[no_mangle]
+fn custom_ox_now() -> Duration {
+  return DayTimeDuration::new(0).into()
+}
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
