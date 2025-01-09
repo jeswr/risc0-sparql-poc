@@ -13,12 +13,14 @@
 // limitations under the License.
 
 use json::stringify;
-use oxrdf::{Dataset, GraphName, NamedNode, Quad};
+use oxrdf::{dataset, Dataset, GraphName, NamedNode, Quad, Triple};
+use oxttl::NQuadsSerializer;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use spareval::{QueryEvaluator, QueryResults, QuerySolution, QuerySolutionIter};
 use spargebra::Query;
 use oxsdatatypes::{DayTimeDuration, Duration};
+use rdf_canon::canonicalize;
 
 #[no_mangle]
 fn custom_ox_now() -> Duration {
@@ -30,8 +32,11 @@ pub struct Outputs {
     // pub query_result: [u8; 32],
     pub data: [u8; 32],
     pub query: [u8; 32],
+    pub result: [u8; 32],
 }
 
+// Performance wise, really all that needs to be input is
+// a proof of query execution and a verifier
 pub fn run(data: &String, query_string: &String) -> Outputs {
     let ex = NamedNode::new("http://example.com").unwrap();
     let dataset = Dataset::from_iter([Quad::new(
@@ -44,16 +49,31 @@ pub fn run(data: &String, query_string: &String) -> Outputs {
     let query = Query::parse(query_string, None).unwrap();
     let results = QueryEvaluator::new().execute(dataset, &query);
     let solution: QueryResults = results.unwrap();
+
+    // let solution = solution.solutions().unwrap();
    
-    if let QueryResults::Solutions(solutions) = solution {
-        let solutions = solutions.collect::<Result<Vec<_>, _>>().unwrap();
-        
-        // solutions[0].unwrap();
+    if let QueryResults::Graph(solutions) = solution {
+        let mut deset: Dataset = Dataset::from_iter(std::iter::empty::<Quad>());
+        for solution in solutions {
+            let s = solution.unwrap();
+            // serializer.serialize_quad(solution);
+            // assert_eq!(
+            //     b"<http://example.com#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> <http://example.com> .\n",
+            //     serializer.finish().as_slice()
+            // );
+            // let solution = solution.unwrap();
+            deset.insert(&Quad::new(
+                s.subject,
+                s.predicate,
+                s.object,
+                GraphName::DefaultGraph,
+            ));
+        }
+
         return Outputs {
-            // query_result: Sha256::digest(json::stringify(solutions)).into(),
             data: Sha256::digest(data).into(),
             query: Sha256::digest(query_string).into(),
-            // query_hash: Sha256::digest(query).into(),
+            result: Sha256::digest(canonicalize(&deset).unwrap()).into(),
         };
     }
 

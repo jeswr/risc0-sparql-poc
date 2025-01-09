@@ -9,3 +9,8 @@ opt-level = 3
 [profile.release]
 debug = 1
 lto = true
+
+
+[patch.crates-io]
+oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }
+oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }

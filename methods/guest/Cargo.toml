@@ -10,3 +10,7 @@ json = "0.12.4"
 risc0-zkvm = { version = "1.2.0", default-features = false, features = ['std'] }
 json-core = { path = "../../core" }
 sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
+
+[patch.crates-io]
+oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }
+oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }

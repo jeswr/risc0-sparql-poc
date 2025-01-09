@@ -7,7 +7,12 @@ labelled `TODO` in places where you'll need to make changes. To better
 understand the concepts behind this template, check out the [zkVM
 Overview][zkvm-overview].
 
-## Quick Start
+## What does this package do?
+
+It outputs:
+ - A has 
+
+
 
 First, make sure [rustup] is installed. The
 [`rust-toolchain.toml`][rust-toolchain] file will be used by `cargo` to

@@ -34,7 +34,7 @@ fn main() {
     // let input: u32 = 15 * u32::pow(2, 27) + 1;
     let env = ExecutorEnv::builder()
         .write(&data).unwrap()
-        .write(&"SELECT * WHERE { ?s ?p ?o . }").unwrap()
+        .write(&"CONSTRUCT WHERE { ?s ?p ?o . }").unwrap()
         .build()
         .unwrap();
 
