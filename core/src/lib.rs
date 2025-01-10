@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use json::stringify;
-use oxrdf::{dataset, Dataset, GraphName, NamedNode, Quad, Triple};
-use oxttl::NQuadsSerializer;
+use oxrdf::{Dataset, GraphName, Quad};
+use oxttl::{TurtleParser};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use spareval::{QueryEvaluator, QueryResults, QuerySolution, QuerySolutionIter};
+use spareval::{QueryEvaluator, QueryResults};
 use spargebra::Query;
 use oxsdatatypes::{DayTimeDuration, Duration};
 use rdf_canon::canonicalize;
@@ -33,18 +32,24 @@ pub struct Outputs {
     pub data: [u8; 32],
     pub query: [u8; 32],
     pub result: [u8; 32],
+    pub result_string: String,
 }
+
 
 // Performance wise, really all that needs to be input is
 // a proof of query execution and a verifier
 pub fn run(data: &String, query_string: &String) -> Outputs {
-    let ex = NamedNode::new("http://example.com").unwrap();
-    let dataset = Dataset::from_iter([Quad::new(
-        ex.clone(),
-        ex.clone(),
-        ex.clone(),
-        GraphName::DefaultGraph,
-    )]);
+    
+    let mut dataset: Dataset = Dataset::new();
+
+    for triple in TurtleParser::new().for_reader(data.as_bytes()) {
+        let t1 = triple.unwrap();
+        let subject = t1.subject;
+        let predicate = t1.predicate;
+        let object = t1.object;
+        let quad = Quad::new(subject, predicate, object, GraphName::DefaultGraph);
+        dataset.insert(&quad);
+    }
 
     let query = Query::parse(query_string, None).unwrap();
     let results = QueryEvaluator::new().execute(dataset, &query);
@@ -72,8 +77,9 @@ pub fn run(data: &String, query_string: &String) -> Outputs {
 
         return Outputs {
             data: Sha256::digest(data).into(),
-            query: Sha256::digest(query_string).into(),
+            query: Sha256::digest(query_string).into(),            
             result: Sha256::digest(canonicalize(&deset).unwrap()).into(),
+            result_string: canonicalize(&deset).unwrap()
         };
     }
 

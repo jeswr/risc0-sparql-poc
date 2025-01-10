@@ -25,21 +25,30 @@ fn main() {
     // ExecutorEnvBuilder::build().
 
     let mut file =
-        std::fs::File::open("res/windsurf.nq").expect("Example file should be accessible");
+        std::fs::File::open("res/profile.ttl").expect("Example file should be accessible");
     let mut data = String::new();
     file.read_to_string(&mut data)
         .expect("Should not have I/O errors");
 
+    let mut query_file =
+        std::fs::File::open("res/query.sparql").expect("Example file should be accessible");
+    let mut query_string = String::new();
+    query_file.read_to_string(&mut query_string)
+        .expect("Should not have I/O errors");
+
     // Start timer
     let start = std::time::Instant::now();
-
+    
     // For example:
     // let input: u32 = 15 * u32::pow(2, 27) + 1;
     let env = ExecutorEnv::builder()
         .write(&data).unwrap()
-        .write(&"CONSTRUCT WHERE { ?s ?p ?o . }").unwrap()
+        .write(&query_string).unwrap()
         .build()
         .unwrap();
+
+    // println!("Loaded Query String: {:?}", query_string);
+    // println!("Loaded Data String: {:?}", data);
 
     // Obtain the default prover.
     let prover = default_prover();
@@ -71,6 +80,8 @@ fn main() {
     receipt.verify(RDF_CONTAINS_GUEST_ID).unwrap();
     // End verification timer
     let end = std::time::Instant::now();
+    println!("Output result{:?}", outputs.result_string);
+    println!("");
     println!("Verification took {:?}", end - start);
 
     // Serialise the receipt
