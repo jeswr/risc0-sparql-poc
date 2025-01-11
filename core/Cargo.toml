@@ -6,20 +6,12 @@ edition = "2021"
 [dependencies]
 hex = "0.4.3"
 json = "0.12.4"
-# oxrdf = "0.2.3"
-# oxttl = "0.1.4"
-oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
-oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
-
 risc0-zkvm = { version = "1.2.0" }
 serde = "1.0"
 sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
-spareval = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
-spargebra = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
-oxsdatatypes = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
 rdf-canon = "0.15.1"
-# oxrdf_core = { package = "oxrdf", version = "0.2.3" }
-
-[patch.crates-io]
-oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
-oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
+oxrdf = "0.2.4"
+oxttl = "0.1.5"
+spareval = "0.1.0"
+spargebra = "0.3.4"
+oxsdatatypes = "0.2.2"
