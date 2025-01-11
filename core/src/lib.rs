@@ -49,18 +49,10 @@ pub fn run(data: &String, query_string: &String) -> Outputs {
     let results = QueryEvaluator::new().execute(dataset, &query);
     let solution: QueryResults = results.unwrap();
 
-    // let solution = solution.solutions().unwrap();
-   
     if let QueryResults::Graph(solutions) = solution {
         let mut deset: Dataset = Dataset::from_iter(std::iter::empty::<Quad>());
         for solution in solutions {
             let s = solution.unwrap();
-            // serializer.serialize_quad(solution);
-            // assert_eq!(
-            //     b"<http://example.com#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://schema.org/Person> <http://example.com> .\n",
-            //     serializer.finish().as_slice()
-            // );
-            // let solution = solution.unwrap();
             deset.insert(&Quad::new(
                 s.subject,
                 s.predicate,
@@ -69,11 +61,13 @@ pub fn run(data: &String, query_string: &String) -> Outputs {
             ));
         }
 
+        let result_string = canonicalize(&deset).unwrap();
+
         return Outputs {
             data: Sha256::digest(data).into(),
             query: Sha256::digest(query_string).into(),            
-            result: Sha256::digest(canonicalize(&deset).unwrap()).into(),
-            result_string: canonicalize(&deset).unwrap()
+            result: Sha256::digest(result_string.clone()).into(),
+            result_string: result_string,
         };
     }
 
