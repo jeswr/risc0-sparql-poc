@@ -10,5 +10,5 @@ risc0-build = { version = "1.2.0" }
 methods = ["guest"]
 
 [patch.crates-io]
-oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }
-oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "4606db060536207c09aff0d9b720901dc6e54d09" }
+oxrdf = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
+oxttl = { git = "https://github.com/jeswr/oxigraph", rev = "e59dc3c61eb03a088f760ba241fbc04b20d061d5" }
