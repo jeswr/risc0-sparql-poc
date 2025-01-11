@@ -19,4 +19,4 @@ cargo run --release
 
 ## Read more
 
-This is part of a larger investigation into [queryable credentials](https://github.com/jeswr/queryable-credentials).
+This is part of a larger investigation into [queryable credentials](https://github.com/jeswr/queryable-credentials) and [privacy preserving decentralised query](https://github.com/solid/research-topics/blob/main/privacy-preserving-query.pdf)
