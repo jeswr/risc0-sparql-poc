@@ -31,7 +31,6 @@ pub struct Outputs {
 // Performance wise, really all that needs to be input is
 // a proof of query execution and a verifier
 pub fn run(data: &String, query_string: &String) -> Outputs {
-    
     let mut dataset: Dataset = Dataset::new();
 
     for triple in TurtleParser::new().for_reader(data.as_bytes()) {
