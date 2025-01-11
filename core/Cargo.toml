@@ -10,7 +10,7 @@ risc0-zkvm = { version = "1.2.0" }
 serde = "1.0"
 sha2 = { git = "https://github.com/risc0/RustCrypto-hashes", tag = "sha2-v0.10.8-risczero.0" }
 rdf-canon = "0.15.1"
-oxrdf = "0.2.4"
-oxttl = "0.1.5"
-spareval = "0.1.0"
-spargebra = "0.3.4"
+oxrdf = { version = "0.2.4", features = ["rdf-star"] }
+oxttl = { version = "0.1.5", features = ["rdf-star"] }
+spareval = { version = "0.1.0", features = ["rdf-star"] }
+spargebra = { version = "0.3.4", features = ["rdf-star"] }

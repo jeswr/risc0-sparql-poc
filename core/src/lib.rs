@@ -22,13 +22,11 @@ use rdf_canon::canonicalize;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
-    // pub query_result: [u8; 32],
     pub data: [u8; 32],
     pub query: [u8; 32],
     pub result: [u8; 32],
     pub result_string: String,
 }
-
 
 // Performance wise, really all that needs to be input is
 // a proof of query execution and a verifier
