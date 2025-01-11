@@ -16,3 +16,7 @@ Get risczero set up on your machine using [this documentation](https://dev.riscz
 ```bash
 cargo run --release
 ```
+
+## Read more
+
+This is part of a larger investigation into [queryable credentials](https://github.com/jeswr/queryable-credentials).
