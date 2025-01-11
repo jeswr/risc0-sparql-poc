@@ -14,8 +14,7 @@
 
 #![no_main]
 
-use json::parse;
-use json_core::{Outputs, run};
+use json_core::run;
 use risc0_zkvm::guest::env;
 
 risc0_zkvm::guest::entry!(main);
