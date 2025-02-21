@@ -11,11 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: curl -L https://risczero.com/install | bash
-        shell: bash
-      - run: source "/home/runner/.bashrc"
-        shell: bash
-      - run: rzup install
+      - name: Install rzup
+        run: |
+          curl -L https://risczero.com/install | bash
+          source "/home/runner/.bashrc"
+          rzup install
         shell: bash
       - run: cargo run --release
         shell: bash
