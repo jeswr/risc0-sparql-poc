@@ -12,5 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: curl -L https://risczero.com/install | bash
+        shell: bash
       - run: rzup install
+        shell: bash
       - run: cargo run --release
+        shell: bash
