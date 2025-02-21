@@ -5,6 +5,7 @@ use std::io::Read;
 use methods::{RDF_CONTAINS_GUEST_ELF, RDF_CONTAINS_GUEST_ID};
 use risc0_zkvm::{default_prover, ExecutorEnv};
 use serde_json;
+use oxrdf::{Quad, NamedNode, Subject, Term, GraphName};
 
 fn main() {
     // Initialize tracing. In order to view logs, run `RUST_LOG=info cargo run`
@@ -44,6 +45,14 @@ fn main() {
     let env = ExecutorEnv::builder()
         .write(&data).unwrap()
         .write(&query_string).unwrap()
+        .write(
+            &Quad::new(
+                Subject::NamedNode(NamedNode::new("http://example.com/subject").unwrap()),
+                NamedNode::new("http://example.com/predicate").unwrap(),
+                Term::NamedNode(NamedNode::new("http://example.com/object").unwrap()),
+                GraphName::NamedNode(NamedNode::new("http://example.com/object").unwrap()),
+            ),
+        ).unwrap()
         .build()
         .unwrap();
 

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::result;
+
 use oxrdf::{Dataset, GraphName, Quad};
 use oxttl::TurtleParser;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use spareval::{QueryEvaluator, QueryResults};
 use spargebra::Query;
-use rdf_canon::canonicalize;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
@@ -30,7 +31,16 @@ pub struct Outputs {
 
 // Performance wise, really all that needs to be input is
 // a proof of query execution and a verifier
-pub fn run(data: &String, query_string: &String) -> Outputs {
+pub fn run(data: &String, query_string: &String, quads: &Quad) -> Outputs {
+    let result_string = "".to_string();
+    return Outputs {
+        data: Sha256::digest(data).into(),
+        query: Sha256::digest(query_string).into(),            
+        result: Sha256::digest(result_string.clone()).into(),
+        result_string: result_string,
+    };
+
+
     let mut dataset: Dataset = Dataset::new();
 
     for triple in TurtleParser::new().for_reader(data.as_bytes()) {
@@ -58,7 +68,9 @@ pub fn run(data: &String, query_string: &String) -> Outputs {
             ));
         }
 
-        let result_string = canonicalize(&deset).unwrap();
+        // deset.canonicalize(algorithm);
+
+        // let result_string = canonicalize(&deset).unwrap();
 
         return Outputs {
             data: Sha256::digest(data).into(),

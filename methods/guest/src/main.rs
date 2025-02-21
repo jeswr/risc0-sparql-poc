@@ -16,12 +16,14 @@
 
 use json_core::run;
 use risc0_zkvm::guest::env;
+use oxrdf::Quad;
 
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
     let data: String = env::read();
     let query: String = env::read();
-    let out = run(&data, &query);
+    let quads: Quad = env::read();
+    let out = run(&data, &query, &quads);
     env::commit(&out);
 }
