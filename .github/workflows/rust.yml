@@ -11,4 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: curl -L https://risczero.com/install | bash
+      - run: rzup install
       - run: cargo run --release
