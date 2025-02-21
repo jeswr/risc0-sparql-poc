@@ -15,7 +15,7 @@ jobs:
         run: |
           curl -L https://risczero.com/install | bash
           source "/home/runner/.bashrc"
-          rzup install
+          /home/runner/.risc0/bin install
         shell: bash
       - run: cargo run --release
         shell: bash
