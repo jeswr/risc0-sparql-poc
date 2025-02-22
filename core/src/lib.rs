@@ -21,6 +21,13 @@ use sha2::{Digest, Sha256};
 use spareval::{QueryEvaluator, QueryResults};
 use spargebra::Query;
 
+pub mod i;
+pub mod blank_node;
+
+// Import I from type.rs
+pub use i::I;
+pub use blank_node::BlankNode;
+
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
 pub struct Outputs {
     pub data: [u8; 32],
@@ -29,15 +36,48 @@ pub struct Outputs {
     pub result_string: String,
 }
 
+// #[derive(Clone, Debug, Eq, PartialEq)]
+// pub struct I {
+//     pub result_string: String,
+// }
+
+// impl<'de> Deserialize<'de> for I {
+//     fn deserialize<D>(deserializer: D) -> result::Result<I, D::Error>
+//     where
+//         D: serde::Deserializer<'de>,
+//     {
+//         let result_string = String::deserialize(deserializer)?;
+//         Ok(I { result_string })
+//     }
+// }
+
+// impl Serialize for I {
+//     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
+//     where
+//         S: serde::Serializer,
+//     {
+//         self.result_string.serialize(serializer)
+//     }
+// }
+
 // Performance wise, really all that needs to be input is
 // a proof of query execution and a verifier
-pub fn run(data: &String, query_string: &String, quads: &Quad) -> Outputs {
+pub fn run(data: &String, query_string: &String, _quads: &I) -> Outputs {
     let result_string = "".to_string();
+
+    if _quads.result_string != "boo" {
+        panic!("[IN RUN] Expected 'boo' but got {:?}", _quads.result_string);
+    }
+
+    // if _quads.result_string != "boo2" {
+    //     panic!("[IN RUN] Expected 'boo2' but got {:?}", _quads.result_string);
+    // }
+
     return Outputs {
         data: Sha256::digest(data).into(),
         query: Sha256::digest(query_string).into(),            
         result: Sha256::digest(result_string.clone()).into(),
-        result_string: result_string,
+        result_string: _quads.result_string.clone(),
     };
 
 
@@ -71,6 +111,14 @@ pub fn run(data: &String, query_string: &String, quads: &Quad) -> Outputs {
         // deset.canonicalize(algorithm);
 
         // let result_string = canonicalize(&deset).unwrap();
+
+        // if _quads.result_string != "boo" {
+        //     panic!("[IN RUN] Expected 'boo' but got {:?}", _quads.result_string);
+        // }
+    
+        // if _quads.result_string != "boo2" {
+        //     panic!("[IN RUN] Expected 'boo2' but got {:?}", _quads.result_string);
+        // }
 
         return Outputs {
             data: Sha256::digest(data).into(),
