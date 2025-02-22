@@ -1,0 +1,22 @@
+name: Rust CI
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rzup
+        run: |
+          curl -L https://risczero.com/install | bash
+          source "/home/runner/.bashrc"
+          ls -la /home/runner/.risc0/bin/
+          /home/runner/.risc0/bin/rzup install
+        shell: bash
+      - run: cargo run --release
+        shell: bash
