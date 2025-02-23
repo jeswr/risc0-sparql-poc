@@ -25,7 +25,7 @@ pub mod i;
 pub mod blank_node;
 
 // Import I from type.rs
-pub use i::I;
+pub use i::{I, I2, I2Content};
 pub use blank_node::BlankNode;
 
 #[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]

@@ -28,10 +28,10 @@ impl<'de> Deserialize<'de> for I {
 }
 
 #[derive(Eq, PartialEq, Debug, Clone, Hash)]
-pub struct I2(I2Content);
+pub struct I2(pub I2Content);
 
 #[derive(PartialEq, Eq, Debug, Clone, Hash)]
-enum I2Content {
+pub enum I2Content {
     A,
     B
 }
@@ -48,11 +48,10 @@ impl I2 {
 
 struct I2Visitor;
 
-
 impl<'de> Visitor<'de> for I2Visitor {
     type Value = I2;
     fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        formatter.write_str("struct I2")
+        formatter.write_str("I2")
     }
     fn visit_map<V>(self, mut map: V) -> Result<I2, V::Error>
     where
@@ -68,7 +67,6 @@ impl<'de> Visitor<'de> for I2Visitor {
         Ok(I2::new(map.next_value::<String>()?).map_err(de::Error::custom)?)
     }
 }
-
 
 impl<'de> Deserialize<'de> for I2 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>

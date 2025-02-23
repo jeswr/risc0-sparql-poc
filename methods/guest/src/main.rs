@@ -14,7 +14,7 @@
 
 #![no_main]
 
-use json_core::{I, BlankNode, run};
+use json_core::{I, BlankNode, run, I2, I2Content};
 use risc0_zkvm::guest::env;
 use oxrdf::{NamedNode, Quad, Literal};
 
@@ -27,6 +27,13 @@ pub fn main() {
 
     if quads.result_string != "boo" {
         panic!("Expected 'boo' but got {:?}", quads.result_string);
+    }
+
+    let i2: I2 = env::read();
+
+    match i2 {
+        I2(I2Content::A) => (),
+        _ => panic!("Expected 'A' but got {:?}", i2),
     }
 
     let _q: NamedNode = env::read();
