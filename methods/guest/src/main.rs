@@ -24,17 +24,22 @@ pub fn main() {
     let data: String = env::read();
     let query: String = env::read();
     let quads: I = env::read();
+
+    if quads.result_string != "boo" {
+        panic!("Expected 'boo' but got {:?}", quads.result_string);
+    }
+
     let _q: NamedNode = env::read();
 
     if _q.as_str() != "http://example.com/subject" {
         panic!("[NamedNode] Expected 'http://example.com/subject' but got {:?}", _q.as_str());
     }
 
-    let _q2: BlankNode = env::read();
+    // let _q2: BlankNode = env::read();
 
-    if "a" != "b" {
-        panic!("[BlankNode] Expected 'a' but got {:?}", "b");
-    }
+    // if "a" != "b" {
+    //     panic!("[BlankNode] Expected 'a' but got {:?}", "b");
+    // }
 
     // if _q2.as_str() != "http://example.com/subject" {
     //     panic!("[BlankNode] Expected 'http://example.com/subject' but got {:?}", _q2.as_str());

@@ -53,9 +53,9 @@ fn main() {
         .write(
             &NamedNode::new("http://example.com/subject").unwrap()
         ).unwrap()
-        .write(
-            &oxrdf::BlankNode::new("abc").unwrap()
-        ).unwrap()
+        // .write(
+        //     &oxrdf::BlankNode::new("abc").unwrap()
+        // ).unwrap()
         // .write(
         //     &oxrdf::Literal::new_language_tagged_literal("abc", "en").unwrap()
         // ).unwrap()
