@@ -14,14 +14,12 @@
 
 #![no_main]
 
-use json_core::run;
+use json_core::I2;
 use risc0_zkvm::guest::env;
 
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    let data: String = env::read();
-    let query: String = env::read();
-    let out = run(&data, &query);
-    env::commit(&out);
+    let _i2: I2 = env::read();
+    env::commit(&"complete");
 }

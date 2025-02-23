@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 methods = { path = "../methods" }
 json-core = { path = "../core" }
+oxrdf = { git = "https://github.com/jeswr/oxigraph.git", rev = "b32b1f3", features = ["rdf-star", "serde-unvalidated"] }
 risc0-zkvm = { version = "1.2.0" }
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 serde = "1.0"

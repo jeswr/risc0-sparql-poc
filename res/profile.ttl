@@ -1,7 +1,0 @@
-<https://mypod.org/alice/profile/card> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/PersonalProfileDocument>.
-<https://mypod.org/alice/profile/card> <http://xmlns.com/foaf/0.1/maker> <https://mypod.org/alice/profile/card#me>.
-<https://mypod.org/alice/profile/card> <http://xmlns.com/foaf/0.1/primaryTopic> <https://mypod.org/alice/profile/card#me>.
-
-<https://mypod.org/alice/profile/card#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person>.
-<https://mypod.org/alice/profile/card#me> <http://xmlns.com/foaf/0.1/name> "Alice".
-<https://mypod.org/alice/profile/card#me> <http://xmlns.com/foaf/0.1/age> "25"^^<http://www.w3.org/2001/XMLSchema#integer>.
