@@ -76,6 +76,15 @@ mod tests {
     }
 
     #[test]
+    fn test_serde_roundtrip_from_reader() {
+        let i2 = I2(I2Content::A);
+        let serialized = serde_json::to_string(&i2).unwrap();
+        let reader = std::io::Cursor::new(serialized);
+        let deserialized: I2 = serde_json::from_reader(reader).unwrap();
+        assert_eq!(deserialized, i2);
+    }
+
+    #[test]
     fn test_serde_error() {
         assert_de_tokens_error::<I2>(
             &[Token::Struct { name: "I2", len: 1 }, Token::Str("value"), Token::Str("B"), Token::StructEnd],
