@@ -1,132 +1,85 @@
-// Copyright 2024 RISC Zero, Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+use serde::{
+    de, de::MapAccess, de::Visitor, ser::SerializeStruct, Deserialize, Deserializer, Serialize,
+    Serializer,
+};
+use std::fmt;
 
-use std::result;
+#[derive(Eq, PartialEq, Debug, Clone, Hash)]
+pub struct I2(pub I2Content);
 
-use oxrdf::{Dataset, GraphName, Quad};
-use oxttl::TurtleParser;
-use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
-use spareval::{QueryEvaluator, QueryResults};
-use spargebra::Query;
-
-pub mod i;
-pub mod blank_node;
-
-// Import I from type.rs
-pub use i::{I, I2, I2Content};
-pub use blank_node::BlankNode;
-
-#[derive(Clone, Debug, Deserialize, Eq, PartialEq, Serialize)]
-pub struct Outputs {
-    pub data: [u8; 32],
-    pub query: [u8; 32],
-    pub result: [u8; 32],
-    pub result_string: String,
+#[derive(PartialEq, Eq, Debug, Clone, Hash)]
+pub enum I2Content {
+    A
 }
 
-// #[derive(Clone, Debug, Eq, PartialEq)]
-// pub struct I {
-//     pub result_string: String,
-// }
-
-// impl<'de> Deserialize<'de> for I {
-//     fn deserialize<D>(deserializer: D) -> result::Result<I, D::Error>
-//     where
-//         D: serde::Deserializer<'de>,
-//     {
-//         let result_string = String::deserialize(deserializer)?;
-//         Ok(I { result_string })
-//     }
-// }
-
-// impl Serialize for I {
-//     fn serialize<S>(&self, serializer: S) -> result::Result<S::Ok, S::Error>
-//     where
-//         S: serde::Serializer,
-//     {
-//         self.result_string.serialize(serializer)
-//     }
-// }
-
-// Performance wise, really all that needs to be input is
-// a proof of query execution and a verifier
-pub fn run(data: &String, query_string: &String, _quads: &I) -> Outputs {
-    let result_string = "".to_string();
-
-    if _quads.result_string != "boo" {
-        panic!("[IN RUN] Expected 'boo' but got {:?}", _quads.result_string);
-    }
-
-    // if _quads.result_string != "boo2" {
-    //     panic!("[IN RUN] Expected 'boo2' but got {:?}", _quads.result_string);
-    // }
-
-    return Outputs {
-        data: Sha256::digest(data).into(),
-        query: Sha256::digest(query_string).into(),            
-        result: Sha256::digest(result_string.clone()).into(),
-        result_string: _quads.result_string.clone(),
-    };
-
-
-    let mut dataset: Dataset = Dataset::new();
-
-    for triple in TurtleParser::new().for_reader(data.as_bytes()) {
-        let t1 = triple.unwrap();
-        let subject = t1.subject;
-        let predicate = t1.predicate;
-        let object = t1.object;
-        let quad = Quad::new(subject, predicate, object, GraphName::DefaultGraph);
-        dataset.insert(&quad);
-    }
-
-    let query = Query::parse(query_string, None).unwrap();
-    let results = QueryEvaluator::new().execute(dataset, &query);
-    let solution: QueryResults = results.unwrap();
-
-    if let QueryResults::Graph(solutions) = solution {
-        let mut deset: Dataset = Dataset::from_iter(std::iter::empty::<Quad>());
-        for solution in solutions {
-            let s = solution.unwrap();
-            deset.insert(&Quad::new(
-                s.subject,
-                s.predicate,
-                s.object,
-                GraphName::DefaultGraph,
-            ));
+impl I2 {
+    pub fn new(value: String) -> Result<Self, String> {
+        if value == "A" {
+            Ok(I2(I2Content::A))
+        } else {
+            Err(value)
         }
+    }
+}
 
-        // deset.canonicalize(algorithm);
+struct I2Visitor;
 
-        // let result_string = canonicalize(&deset).unwrap();
+impl<'de> Visitor<'de> for I2Visitor {
+    type Value = I2;
+    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("I2")
+    }
+    fn visit_map<V>(self, mut map: V) -> Result<I2, V::Error>
+    where
+        V: MapAccess<'de>,
+    {
+        map.next_key::<String>()?;
+        Ok(I2::new(map.next_value::<String>()?).map_err(de::Error::custom)?)
+    }
+}
 
-        // if _quads.result_string != "boo" {
-        //     panic!("[IN RUN] Expected 'boo' but got {:?}", _quads.result_string);
-        // }
-    
-        // if _quads.result_string != "boo2" {
-        //     panic!("[IN RUN] Expected 'boo2' but got {:?}", _quads.result_string);
-        // }
+impl<'de> Deserialize<'de> for I2 {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        deserializer.deserialize_struct("I2", &["value"], I2Visitor)
+    }
+}
 
-        return Outputs {
-            data: Sha256::digest(data).into(),
-            query: Sha256::digest(query_string).into(),            
-            result: Sha256::digest(result_string.clone()).into(),
-            result_string: result_string,
-        };
+impl Serialize for I2 {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        let mut state = serializer.serialize_struct("I2", 1)?;
+        state.serialize_field("value", "A")?;
+        state.end()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_test::{assert_de_tokens_error, assert_tokens, Token};
+
+    #[test]
+    fn test_serde() {
+        let i2 = I2(I2Content::A);
+        assert_tokens(&i2, &[Token::Struct { name: "I2", len: 1 }, Token::Str("value"), Token::Str("A"), Token::StructEnd]);
     }
 
-    panic!("QueryResults::Solutions expected");
+    #[test]
+    fn test_serde_roundtrip() {
+        let i2 = I2(I2Content::A);
+        let serialized = serde_json::to_string(&i2).unwrap();
+        assert_eq!(serialized, r#"{"value":"A"}"#);
+        let deserialized: I2 = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(deserialized, i2);
+    }
+
+    #[test]
+    fn test_serde_error() {
+        assert_de_tokens_error::<I2>(
+            &[Token::Struct { name: "I2", len: 1 }, Token::Str("value"), Token::Str("B"), Token::StructEnd],
+            "B",
+        );
+    }
 }
