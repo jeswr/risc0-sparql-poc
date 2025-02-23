@@ -18,5 +18,7 @@ jobs:
           ls -la /home/runner/.risc0/bin/
           /home/runner/.risc0/bin/rzup install
         shell: bash
+      - run: cargo test
+        shell: bash
       - run: cargo run --release
         shell: bash

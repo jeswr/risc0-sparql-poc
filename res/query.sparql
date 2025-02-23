@@ -1,5 +1,0 @@
-CONSTRUCT { ?entity <https://example.org/ns#isAdult> ?adult }
-WHERE {
-  ?entity <http://xmlns.com/foaf/0.1/age> ?age.
-  BIND( ?age >= 18 as ?adult )  
-}
