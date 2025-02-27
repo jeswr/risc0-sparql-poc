@@ -5,12 +5,7 @@ use serde::{
 use std::fmt;
 
 #[derive(Eq, PartialEq, Debug, Clone, Hash)]
-pub struct I2(pub I2Content);
-
-#[derive(PartialEq, Eq, Debug, Clone, Hash)]
-pub enum I2Content {
-    A,
-}
+pub struct I2();
 
 struct I2Visitor;
 
@@ -23,7 +18,7 @@ impl<'de> Visitor<'de> for I2Visitor {
     where
         V: MapAccess<'de>,
     {
-        Ok(I2(I2Content::A))
+        Ok(I2())
     }
 }
 
@@ -49,7 +44,7 @@ mod tests {
 
     #[test]
     fn test_serde() {
-        let i2 = I2(I2Content::A);
+        let i2 = I2();
         assert_tokens(
             &i2,
             &[Token::Struct { name: "I2", len: 0 }, Token::StructEnd],
@@ -58,7 +53,7 @@ mod tests {
 
     #[test]
     fn test_serde_roundtrip() {
-        let i2 = I2(I2Content::A);
+        let i2 = I2();
         let serialized = serde_json::to_string(&i2).unwrap();
         assert_eq!(serialized, r#"{}"#);
         let deserialized: I2 = serde_json::from_str(&serialized).unwrap();
@@ -67,7 +62,7 @@ mod tests {
 
     #[test]
     fn test_serde_roundtrip_from_reader() {
-        let i2 = I2(I2Content::A);
+        let i2 = I2();
         let serialized = serde_json::to_string(&i2).unwrap();
         let reader = std::io::Cursor::new(serialized);
         let deserialized: I2 = serde_json::from_reader(reader).unwrap();
